@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>PMNG - Personas</title>
+</head>
+<body>
+  <h1>Personas</h1>
+
+  <form id="formulario">
+    <input type="text" id="nombre" placeholder="Nombre" required>
+    <button type="submit">Registrar</button>
+  </form>
+
+  <p id="mensaje"></p>
+
+  <h2>Lista</h2>
+  <ul id="lista"></ul>
+
+  <script>
+    // Usa la misma IP con la que abriste la página, pero en el puerto 8089.
+    // Así no tienes que escribir la IP pública a mano.
+    const API = "http://" + window.location.hostname + ":8089/people";
+
+    async function cargar() {
+      const res = await fetch(API);
+      const json = await res.json();
+      const lista = document.getElementById("lista");
+      lista.innerHTML = "";
+      json.data.forEach(p => {
+        const li = document.createElement("li");
+        li.textContent = p.id + " - " + p.name;
+        lista.appendChild(li);
+      });
+    }
+
+    document.getElementById("formulario").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const nombre = document.getElementById("nombre").value;
+      const res = await fetch(API, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: nombre })
+      });
+      const json = await res.json();
+      document.getElementById("mensaje").textContent = json.message;
+      document.getElementById("nombre").value = "";
+      cargar();
+    });
+
+    cargar();
+  </script>
+</body>
+</html>
