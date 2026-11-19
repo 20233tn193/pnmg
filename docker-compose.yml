@@ -15,7 +15,7 @@ services:
       start_period: 20s
 
   service:
-    build: ./service
+    build: ./Service
     container_name: pmng-service
     ports:
       - "8089:8080"
@@ -24,7 +24,7 @@ services:
         condition: service_healthy
 
   client:
-    build: ./client
+    build: ./Client
     container_name: pmng-client
     ports:
       - "80:80"
